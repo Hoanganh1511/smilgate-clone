@@ -42,3 +42,22 @@ body,
 .nav-list__item:hover .nav-link:after {
   width: 100%;
 }
+
+.child-nav-link {
+  position: relative;
+}
+
+.child-nav-link:after {
+  position: absolute;
+  content: "";
+  display: inline-block;
+  top: calc(100% + 2px);
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ff5500;
+  transition-duration: 0.3s;
+}
+.child-nav-link:hover:after {
+  width: 100%;
+}

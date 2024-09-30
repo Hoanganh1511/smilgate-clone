@@ -1,16 +1,21 @@
 "use client";
+import { navData } from "@/data/navs";
 import useFonts from "@/hooks/useFonts";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
-
+import { MdArrowOutward } from "react-icons/md";
 const Header = () => {
   const { circular } = useFonts();
   const [currentHeaderVariant, setCurrentHeaderVariant] = useState("default");
   const [currentNavVariant, setCurrentNavVariant] = useState("default");
   const [currentDropdownVariant, setCurrentDropdownVariant] =
     useState("default");
+  const [
+    currentBackgroundDropdownVariant,
+    setCurrentBackgroundDropdownVariant,
+  ] = useState("default");
   const timerRef = useRef<any>(null);
   const handleNavMouseEnter = () => {
     if (timerRef.current) {
@@ -19,16 +24,17 @@ const Header = () => {
     setCurrentNavVariant("hover");
     setCurrentHeaderVariant("enter");
     setCurrentDropdownVariant("expanded");
+    setCurrentBackgroundDropdownVariant("expanded");
   };
   const handleHeaderMouseLeave = () => {
+    setCurrentDropdownVariant("default");
+    setCurrentBackgroundDropdownVariant("default");
     timerRef.current = setTimeout(() => {
       setCurrentHeaderVariant("default");
       setCurrentNavVariant("default");
     }, 1000);
   };
-  const handleDropdownMouseLeave = () => {
-    setCurrentDropdownVariant("default");
-  };
+
   const headerVariant: Variants = {
     default: {
       backgroundColor: "transparent",
@@ -59,13 +65,42 @@ const Header = () => {
   const dropdownVariants: Variants = {
     default: {
       height: 0,
+      overflow: "hidden",
       transition: {
         duration: 1,
         ease: [0.86, 0, 0.07, 1],
       },
     },
     expanded: {
-      height: 500,
+      height: 300,
+      overflow: "hidden",
+      transition: {
+        duration: 1,
+        ease: [0.86, 0, 0.07, 1],
+      },
+    },
+  };
+  const linkDropdownVariants: Variants = {
+    default: {
+      color: "transparent",
+    },
+    expanded: {
+      color: "black",
+    },
+  };
+  const backgroundDropdownVariants: Variants = {
+    default: {
+      height: 0,
+      overflow: "hidden",
+      transition: {
+        delay: 0,
+        duration: 1,
+        ease: [0.86, 0, 0.07, 1],
+      },
+    },
+    expanded: {
+      height: 360,
+      backgroundColor: "white",
       transition: {
         duration: 1,
         ease: [0.86, 0, 0.07, 1],
@@ -99,294 +134,63 @@ const Header = () => {
         </Link>
       </h1>
       <nav className="">
-        <ul className="nav-list flex items-center justify-between">
-          <motion.li
-            variants={navVariants}
-            onMouseEnter={handleNavMouseEnter}
-            animate={currentNavVariant}
-            className="nav-list__item relative h-full transition-width duration-50 text-center overflow-hidden uppercase"
-          >
-            <Link
-              href="/company"
-              className={`nav-link relative h-full inline-block font-regular tracking-normal leading-[85px] ${circular.className}`}
-            >
-              company
-            </Link>
-          </motion.li>
-          <motion.li
-            variants={navVariants}
-            onMouseEnter={handleNavMouseEnter}
-            animate={currentNavVariant}
-            className="nav-list__item  relative h-full transition-width duration-50 text-center overflow-hidden uppercase"
-          >
-            <Link
-              href="/company"
-              className={`nav-link relative h-full inline-block font-regular tracking-normal leading-[85px] ${circular.className}`}
-            >
-              business
-            </Link>
-          </motion.li>
-          <motion.li
-            variants={navVariants}
-            onMouseEnter={handleNavMouseEnter}
-            animate={currentNavVariant}
-            className="nav-list__item  relative h-full transition-width duration-50 text-center overflow-hidden uppercase"
-          >
-            <Link
-              href="/company"
-              className={`nav-link relative h-full inline-block font-regular tracking-normal leading-[85px] ${circular.className}`}
-            >
-              game
-            </Link>
-          </motion.li>
-          <motion.li
-            variants={navVariants}
-            onMouseEnter={handleNavMouseEnter}
-            animate={currentNavVariant}
-            className="nav-list__item relative h-full transition-width duration-50 text-center overflow-hidden uppercase"
-          >
-            <Link
-              href="/company"
-              className={`nav-link relative h-full inline-block font-regular tracking-normal leading-[85px] ${circular.className}`}
-            >
-              media
-            </Link>
-          </motion.li>
-          <motion.li
-            variants={navVariants}
-            onMouseEnter={handleNavMouseEnter}
-            animate={currentNavVariant}
-            className="nav-list__item relative h-full transition-width duration-50 text-center overflow-hidden uppercase"
-          >
-            <Link
-              href="/company"
-              className={`nav-link relative h-full inline-block font-regular tracking-normal leading-[85px] ${circular.className}`}
-            >
-              career
-            </Link>
-          </motion.li>
-          <motion.li
-            variants={navVariants}
-            onMouseEnter={handleNavMouseEnter}
-            animate={currentNavVariant}
-            className="nav-list__item relative h-full transition-width duration-50 text-center overflow-hidden uppercase"
-          >
-            <Link
-              href="/company"
-              className={`nav-link relative h-full inline-block font-regular tracking-normal leading-[85px] ${circular.className}`}
-            >
-              csr/csv
-            </Link>
-          </motion.li>
+        <ul className="z-[91] relative nav-list flex items-center justify-between">
+          {navData.map((nav, idx) => {
+            return (
+              <motion.li
+                key={idx}
+                variants={navVariants}
+                onMouseEnter={handleNavMouseEnter}
+                animate={currentNavVariant}
+                className="nav-list__item relative h-full transition-width duration-50 "
+              >
+                <Link
+                  href={nav.mainHref}
+                  className={`nav-link relative h-full inline-block text-center  uppercase font-regular tracking-normal leading-[85px] ${circular.className}`}
+                >
+                  {nav.mainItem}
+                </Link>
+                <motion.ul
+                  variants={dropdownVariants}
+                  animate={currentDropdownVariant}
+                  className="pt-[28px] absolute top-full left-0 w-full flex flex-col"
+                >
+                  {nav.children.map((childNav, childIdx) => {
+                    return (
+                      <motion.li
+                        variants={linkDropdownVariants}
+                        animate={currentDropdownVariant}
+                        key={childIdx}
+                        className="relative leading-[1] text-transparent"
+                      >
+                        <Link
+                          href={childNav.href}
+                          className={`relative inline-block child-nav-link pt-6 text-[13.5px] font-medium uppercase tracking-[-0.21px] whitespace-wrap ${circular.className}`}
+                        >
+                          <div
+                            className="inline-block"
+                            dangerouslySetInnerHTML={{ __html: childNav.title }}
+                          ></div>
+                          {childNav.isExternal && (
+                            <MdArrowOutward className="inline-block ml-[2px] mb-[4px]" />
+                          )}
+                        </Link>
+                      </motion.li>
+                    );
+                  })}
+                </motion.ul>
+              </motion.li>
+            );
+          })}
         </ul>
         <motion.div
-          variants={dropdownVariants}
-          animate={currentDropdownVariant}
-          onMouseLeave={handleDropdownMouseLeave}
-          className="absolute top-full left-0 w-full bg-white overflow-hidden"
-        >
-          <div className="w-fit mx-auto flex pt-[28px]">
-            <ul className="w-[164px] pl-[48px] flex flex-col space-y-5">
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  <span>ABOUT SMILEGATE</span>
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  About the Group
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  HISTORY{" "}
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  ICONIC 20{" "}
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-wrap ${circular.className}`}
-                >
-                  DIVERSITY AND INCLUSION
-                </Link>
-              </li>
-            </ul>
-            <ul className="w-[164px] pl-[54px] flex flex-col space-y-5">
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`relative  text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap  ${circular.className} `}
-                >
-                  <span className="">
-                    {" "}
-                    GAME DEVELOPMENT
-                    <br />
-                    /SERVICES
-                  </span>
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  IP BUSINESS & TECH
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  INVESTMENT
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  PLATFORM
-                </Link>
-              </li>
-            </ul>
-            <ul className="w-[164px] pl-[66px] flex flex-col space-y-5">
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  CROSSFIRE
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  LOST ARK
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  EPIC SEVEN
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  LORDNINE
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  OUTERPLANE
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  SIERRA SQUADS
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  target="_blank"
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  STOVE STORE
-                </Link>
-              </li>
-            </ul>
-            <ul className="w-[164px] pl-[64px] flex flex-col space-y-5">
-              <li className="leading-[1]">
-                <Link
-                  target="_blank"
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  NEWSROOM
-                </Link>
-              </li>
-            </ul>
-            <ul className="w-[164px] pl-[60px] flex flex-col space-y-5">
-              <li className="leading-[1]">
-                <Link
-                  target="_blank"
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  KOREA
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  target="_blank"
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  WEST
-                </Link>
-              </li>
-            </ul>
-            <ul className="w-[164px] pl-[54px] flex flex-col space-y-5">
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  FOR ENTREPRENEURSHIP
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  FOR FUTURE GENERATION
-                </Link>
-              </li>
-              <li className="leading-[1]">
-                <Link
-                  href="/"
-                  className={`text-[14px] font-medium uppercase w-auto inline-block  tracking-[-0.21px] whitespace-nowrap ${circular.className}`}
-                >
-                  FOR CREATIVE & CREATION
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </motion.div>
+          variants={backgroundDropdownVariants}
+          animate={currentBackgroundDropdownVariant}
+          className="absolute z-[90] top-full left-0 w-full bg-white overflow-hidden"
+        ></motion.div>
       </nav>
       {/* etc */}
+
       <div className="flex">
         <motion.div
           variants={etcVariants}

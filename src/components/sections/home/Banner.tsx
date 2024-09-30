@@ -1,11 +1,54 @@
 "use client";
 import { useCursorContext } from "@/hooks/useCursorCustom";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import React, { useEffect, useRef } from "react";
 
 const Banner = () => {
   const { animateCursor } = useCursorContext();
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
   const videoRef = useRef<HTMLVideoElement>(null);
+  const smoothScrollTo = (target, duration) => {
+    const start = window.scrollY;
+    const end = target.getBoundingClientRect().top + start;
+    const distance = end - start;
+    let startTime = null;
+
+    const animation = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      const scrollY = start + distance * easeInOutCubic(progress);
+      window.scrollTo(0, scrollY);
+
+      if (progress < 1) {
+        requestAnimationFrame(animation);
+      }
+    };
+
+    requestAnimationFrame(animation);
+  };
+
+  const easeInOutCubic = (t) => {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  };
+
+  useEffect(() => {
+    const handleScroll = (e) => {
+      console.log(e);
+      const target = document.querySelector("#introduce-section");
+      const yScrolled = window.scrollY;
+      if (target && yScrolled < 10) {
+        smoothScrollTo(target, 500);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play();
@@ -19,7 +62,10 @@ const Banner = () => {
     animateCursor("default");
   };
   return (
-    <div className="relative h-[100vh] flex items-center justify-center overflow-hidden">
+    <motion.div
+      ref={ref}
+      className="relative h-[100vh]  flex items-center justify-center overflow-hidden"
+    >
       <video
         ref={videoRef}
         autoPlay={true}
@@ -48,7 +94,7 @@ const Banner = () => {
         >
           CROSSFIRE
         </motion.h1> */}
-    </div>
+    </motion.div>
   );
 };
 

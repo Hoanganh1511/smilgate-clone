@@ -11,7 +11,6 @@ function CursorCustom() {
 
   useEffect(() => {
     const mouseMoveHandler = (e: MouseEvent) => {
-      console.log(e);
       cursorX.set(e.clientX - 10);
       cursorY.set(e.clientY - 15);
     };
