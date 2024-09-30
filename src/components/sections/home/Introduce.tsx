@@ -28,14 +28,15 @@ const HorizontalScrollCarousel = () => {
   const { scrollYProgress } = useScroll({
     target: targetRef,
   });
+  console.log(1, isInView);
   const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
-  const smoothScrollTo = (target, duration) => {
+  const smoothScrollTo = (target: HTMLElement, duration: number) => {
     const start = window.scrollY;
     const end = target.getBoundingClientRect().top + start;
     const distance = end - start;
-    let startTime = null;
+    let startTime: number | null = null;
 
-    const animation = (currentTime) => {
+    const animation = (currentTime: number) => {
       if (!startTime) startTime = currentTime;
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
@@ -50,35 +51,36 @@ const HorizontalScrollCarousel = () => {
     requestAnimationFrame(animation);
   };
 
-  const easeInOutCubic = (t) => {
+  const easeInOutCubic = (t: number): number => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (targetRef.current && isInView) {
-        smoothScrollTo(targetRef.current, 2000); // Duration in milliseconds
+        console.log("scroll naooo");
+        smoothScrollTo(targetRef.current, 1000); // Duration in milliseconds
       }
     }, 1000); // Initial delay to ensure rendering
 
     return () => clearTimeout(timeoutId);
-  }, [isInView]);
+  }, [isInView, smoothScrollTo]);
   const titleVariant: Variants = {
     default: {
       height: 0,
       opacity: 0,
       transition: {
         duration: 1,
-        ease: [0.86, 0, 0.07, 1],
+        // ease: [0.86, 0, 0.07, 1],
       },
     },
     active: {
       minHeight: 300,
       opacity: 1,
       transition: {
-        delay: 1,
-        duration: 3,
-        ease: [0.86, 0, 0.07, 1],
+        delay: 2,
+        duration: 2,
+        // ease: [0.86, 0, 0.07, 1],
       },
     },
   };
