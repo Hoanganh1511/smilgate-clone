@@ -1,20 +1,19 @@
 "use client";
 import { useCursorContext } from "@/hooks/useCursorCustom";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import React, { useEffect, useRef } from "react";
 
 const Banner = () => {
   const { animateCursor } = useCursorContext();
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
   const videoRef = useRef<HTMLVideoElement>(null);
-  const smoothScrollTo = (target, duration) => {
+  const smoothScrollTo = (target: HTMLElement, duration: number): void => {
     const start = window.scrollY;
     const end = target.getBoundingClientRect().top + start;
     const distance = end - start;
-    let startTime = null;
+    let startTime: number | null = null;
 
-    const animation = (currentTime) => {
+    const animation = (currentTime: number): void => {
       if (!startTime) startTime = currentTime;
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
@@ -29,14 +28,13 @@ const Banner = () => {
     requestAnimationFrame(animation);
   };
 
-  const easeInOutCubic = (t) => {
+  const easeInOutCubic = (t: number): number => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
 
   useEffect(() => {
-    const handleScroll = (e) => {
-      console.log(e);
-      const target = document.querySelector("#introduce-section");
+    const handleScroll = () => {
+      const target = document.querySelector<HTMLElement>("#introduce-carousel");
       const yScrolled = window.scrollY;
       if (target && yScrolled < 10) {
         smoothScrollTo(target, 500);

@@ -73,7 +73,7 @@ const Header = () => {
     },
     expanded: {
       height: 300,
-      overflow: "hidden",
+      overflow: "visible",
       transition: {
         duration: 1,
         ease: [0.86, 0, 0.07, 1],
@@ -101,6 +101,7 @@ const Header = () => {
     expanded: {
       height: 360,
       backgroundColor: "white",
+      overflow: "visible",
       transition: {
         duration: 1,
         ease: [0.86, 0, 0.07, 1],
@@ -108,7 +109,7 @@ const Header = () => {
     },
   };
   return (
-    <motion.div
+    <motion.header
       variants={headerVariant}
       animate={currentHeaderVariant}
       onMouseLeave={handleHeaderMouseLeave}
@@ -142,7 +143,7 @@ const Header = () => {
                 variants={navVariants}
                 onMouseEnter={handleNavMouseEnter}
                 animate={currentNavVariant}
-                className="nav-list__item relative h-full transition-width duration-50 "
+                className={`nav-list__item relative h-full w-[140px] text-white transition-width duration-50 `}
               >
                 <Link
                   href={nav.mainHref}
@@ -153,7 +154,7 @@ const Header = () => {
                 <motion.ul
                   variants={dropdownVariants}
                   animate={currentDropdownVariant}
-                  className="pt-[28px] absolute top-full left-0 w-full flex flex-col"
+                  className="pt-[28px] absolute top-full left-0 w-full h-0 overflow-hidden flex flex-col"
                 >
                   {nav.children.map((childNav, childIdx) => {
                     return (
@@ -186,7 +187,7 @@ const Header = () => {
         <motion.div
           variants={backgroundDropdownVariants}
           animate={currentBackgroundDropdownVariant}
-          className="absolute z-[90] top-full left-0 w-full bg-white overflow-hidden"
+          className="absolute z-[90] top-full left-0 w-full h-0 bg-white overflow-hidden"
         ></motion.div>
       </nav>
       {/* etc */}
@@ -209,7 +210,7 @@ const Header = () => {
       </div>
 
       {/* Dropdown */}
-    </motion.div>
+    </motion.header>
   );
 };
 
