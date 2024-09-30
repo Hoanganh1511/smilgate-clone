@@ -31,20 +31,21 @@ const Banner = () => {
   const easeInOutCubic = (t: number): number => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
-
+  console.log(window.scrollY);
   useEffect(() => {
     const handleScroll = () => {
       const target = document.querySelector<HTMLElement>("#introduce-carousel");
       const yScrolled = window.scrollY;
-      if (target && yScrolled < 10) {
-        smoothScrollTo(target, 500);
+      if (target && yScrolled < 100 && yScrolled > 30) {
+        console.log("y", yScrolled, "scroll naooo");
+        smoothScrollTo(target, 1);
       }
     };
-    window.addEventListener("scroll", handleScroll);
-
+    // window.addEventListener("scroll", handleScroll);
+    window.addEventListener("wheel", handleScroll);
     // Cleanup listener on component unmount
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("wheel", handleScroll);
     };
   }, []);
   useEffect(() => {

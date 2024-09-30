@@ -74,7 +74,7 @@ const HorizontalScrollCarousel = () => {
       opacity: 0,
       transition: {
         duration: 1,
-        ease: [0.86, 0, 0.07, 1],
+        // ease: [0.86, 0, 0.07, 1],
       },
     },
     active: {
